@@ -1,0 +1,14 @@
+                        <div >
+                             <%= link_to "<span class='name'>#{cc.name}</span>".html_safe, cc, title: "#{cc.name}", data: { no_turbolink: true } %>           
+                            </div>
+                            <% mm=cc.main_address%>
+                            <% unless mm.nil? %>
+                            <div>
+                                <%= "#{mm.city} #{mm.postcode}  #{mm.street} / #{mm.number}  [#{mm.country}]" %>
+                                </div>
+                                <% unless cc.note.nil?%>
+                                <div class="company_note">
+                                <%= cc.note %>    
+                                </div>
+                                <% end %>
+<%end%>

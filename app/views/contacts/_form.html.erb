@@ -1,0 +1,56 @@
+<div class="card">
+<%= form_for([@company,@contact]) do |form| %>
+  <% if contact.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(contact.errors.count, "error") %> prohibited this contact from being saved:</h2>
+
+      <ul>
+        <% contact.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="card-header">
+
+  </div>
+  <div class="card-body m-1">
+  <div class="form-group">
+        <div class="field">
+          <label for="name">Name</label>          
+            <%= form.text_field :name,id: "name",class: "form-control" %>
+       </div>      
+      </div>
+
+      <div class="form-group">
+        <div class="field">
+          <label for="lastname">Lastname</label>          
+            <%= form.text_field :lastname,id: "lastname",class: "form-control" %>
+       </div>      
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="jobposition">Job position</label>          
+            <%= form.text_field :jobposition,id: "jobposition",class: "form-control" %>
+       </div>      
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="phone">Phone</label>          
+            <%= form.text_field :phone,id: "phone",class: "form-control" %>
+       </div>      
+      </div>      
+      <div class="form-group">
+        <div class="field">
+          <label for="email">E-mail</label>          
+            <%= form.text_field :email,id: "email",class: "form-control" %>
+       </div>      
+      </div>
+    </div>
+    <div class="card-footer text-muted">
+  <div class="actions calendar-heading">
+    <%= form.submit class: "btn share-box" %>
+  </div>
+</div>
+<% end %>
+</div>

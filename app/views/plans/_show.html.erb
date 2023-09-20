@@ -1,0 +1,53 @@
+<div class="card">
+  <div class="card-header">
+    <p>Task: <strong><%=@plan.id%></strong></p>
+  </div>
+  <div class="card-body m-1">
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Event date:</strong>
+  <%= @plan.event_date %>
+</p>
+    <%if @plan.company_id %>
+    <p>
+    <strong>Company:</strong>
+    <% cc = Company.find_by_id(@plan.company_id) %>    
+    <%=cc.name%>      
+    </p>
+    <%end%>
+
+    <%if @plan.contact_id %>
+    <p>
+    <strong>Contact:</strong>
+    <% cc = Company.find_by_id(@plan.company_id) %>    
+    <% kc = cc.contacts.find_by_id(@plan.contact_id)  %>
+    <%="#{kc.name} #{kc.lastname}"%>      
+    </p>
+    <%end%>
+
+    <%if @plan.address_id %>
+    <p>
+    <strong>Address:</strong>
+    <% cc = Company.find_by_id(@plan.company_id) %>    
+    <% ac = cc.addresses.find_by_id(@plan.address_id) %>
+    <%="#{ac.name}"%>      
+    </p>
+    <%end%>
+
+
+
+
+<p>
+  <strong>Event name:</strong>
+  <%= @plan.event_name %>
+</p>
+
+<strong>Description:</strong>
+<div class="p-2 px-3 text" id="textField">
+  <textarea readonly rows="10">
+    <%= @plan.event_description %>
+  </textarea>
+  
+</div>
+</div>

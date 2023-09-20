@@ -1,0 +1,54 @@
+<div class="card">
+  <div class="header">
+    <strong>
+      <%= "Addresses" %>
+    </strong>
+    
+
+      <strong>
+        <%= " for #{Company.find(params[:company_id]).name}" %>
+      </strong>
+    
+
+        
+  </div>
+  <div class="body">
+    <div data-turbolinks="false">
+      <table class="table table-responsive" id="table-regular" data-toggle="table" data-url="<%="
+        #{company_addresses_path}"%>"        
+        data-page-size="10"
+        data-page-list="[10]"
+        data-search="true"        
+        data-single-select="true"
+        data-side-pagination="client"
+        data-select-item-name="id[]"
+        data-click-to-select="true"
+        data-id-field="id"
+        >
+        <thead>
+          <tr>
+            <th data-field="id" data-switchable="false" data-visible="false">ID</th>
+            <th data-field="name">Name</th>
+            <th data-field="street">Street</th>
+            <th data-field="number">number</th>
+            <th data-field="city">City</th>
+            <th data-field="postcode">Postcode</th>
+            <th data-field="country">Country</th>
+            <th data-field="region">Region</th>
+            <th data-field="main">Main</th>
+            <th data-field="actions">Actions</th>
+          </tr>
+        </thead>
+      </table>
+      <%== pagy_bootstrap_nav(@pagy) %>
+    </div>
+    <br>
+  </div>
+</div>
+</div>
+
+<div id="modal-window" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

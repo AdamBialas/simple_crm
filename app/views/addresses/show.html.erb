@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @address.name %>
+</p>
+
+<p>
+  <strong>Company:</strong>
+  <%= @address.company_id %>
+</p>
+
+<%= link_to 'Edit', edit_company_address_path(@address) %> |
+<%= link_to 'Back', company_addresses_path %>

@@ -1,0 +1,180 @@
+
+  <div class="card">
+    <div class="header">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <%= link_to 'New Company' , new_company_path , class: "nav-link " , :remote=> true , "data-toggle" =>
+                "modal","data-target" => "#modal-window" %>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Export
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                <%= link_to 'E-mail list', "#{export_companies_path(format: 'txt',state: params[:state],selected: params[:selected],name: params[:name],person: params[:person],place:params[:place],sort: params[:sort],order: params[:order],features: params[:features])}", class: "dropdown-item" %>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+      <div class="panel-body">
+        <form class="form-horizontal form-remove-empty-get-params" role="form" method="post" action="<%= search_companies_path %>">
+          <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+            <div class="field-custom">
+              <div class="row">
+                <div class="col-md-15">
+                  <div class="form-group  form-group-sm">
+                    <div class="col-md-12">
+                      <%= select_tag("state",options_for_select(Company::STATES.to_a.map{|x| [x[1],
+                        x[0]]},params["state"]),{prompt: 'status' ,
+                        class: "form-control input-sm send-form-after-change" }) %>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <div class="col-md-12">
+                      <input type="text" name="name" class="form-control input-sm" id="exampleInputPassword2"
+                        placeholder="name" value="<%= params[:name] || "" %>">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-15">
+                  <div class="form-group  form-group-sm">
+                    <div class="col-md-12">
+                      <input type="text" name="person" class="form-control input-sm" id="exampleInputPassword2"
+                        placeholder="person" value="<%= params[:person] || "" %>">
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <div class="col-md-12">
+                      <input type="text" name="place" class="form-control input-sm" id="exampleInputPassword2"
+                        placeholder="place" value="<%= params[:place] || "" %>">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-15">
+                <% @features_list.each do |xx| %>
+                <div class="form-group form-group-sm">
+                  <div class="col-md-12">                    
+                      <%= select_tag "features[#{xx.name.to_s}]",  options_for_select( xx.values, selected: params[:features]["#{xx.name.to_s}"] ), { prompt: "#{xx.caption.to_s}" , class: 'form-control', required: false ,id: "features_#{xx.name.to_s}"} %>
+                  </div>
+                </div>
+                <%end%>
+                </div>
+
+
+                <div class="col-md-15">
+                <div class="col-md-12">
+                  <button type="submit" class="btn btn-primary btn-lg active" name="search" value="search"
+                    title="Search">Search</button>
+                </div>
+              </div>
+            </div>
+            </div>
+      </div>
+    </div>
+    <div class="body">
+      <div data-turbolinks="false">
+        <table class="table table-responsive" id="table-regular" data-toggle="table" data-method="post" data-url="<%= "
+          #{search_companies_path(state: params[:state], name: params[:name],person:
+          params[:person],place:params[:place],page: params[:page],limit: params[:limit],sort: params[:sort],order:
+          params[:order],authenticity_token: form_authenticity_token,features: params[:features])}"%>"
+          data-page-size="5"
+          data-sort-name=<%="#{params[:sort]||'name'}"%>
+            data-sort-order=<%="#{params[:order]||'desc'}"%>
+              data-side-pagination="server"
+              data-select-item-name="id[]" data-click-to-select="true"
+              data-id-field="id" data-row-style="rowStyle" data-click-to-select="true" data-icon-size="sm"
+              data-id-field="id"
+              data-select-item-name="id[]"
+              data-cookie = "true"
+              data-cookie-id-table = "CompaniesTable"
+              data-cookie-expire = "12h"
+              >
+              <thead>
+                <tr>
+                  <th data-field="state" data-checkbox="true"></th>
+                  <th data-field="id" data-switchable="false" data-visible="false">ID</th>
+                  <th data-field="name" data-width="75" data-sortable="true" data-width-unit="%">Company Name</th>
+                  <th data-field="created_at" data-width="5" data-width-unit="%" data-sortable="true">Created</th>
+                  <th data-field="status" data-width="5" data-width-unit="%">Status</th>
+                  <th data-field="max_date" data-sortable="true" data-width="5" data-width-unit="%">Last event</th>
+                  <th data-field="actions" data-width="25" data-width-unit="%">Actions</th>
+                </tr>
+              </thead>
+        </table>
+        <%== pagy_bootstrap_nav(@pagy) %>
+      </div>
+    </div>
+
+    <br>
+
+  </div>
+  <div id="modal-window" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>
+
+  <script>
+
+    function rowStyle(row, index) {
+      console.log(row)
+      if (row.status.includes('Active')) {
+        return {
+          css: {
+            'background-color': '#A2D5ABBF'
+          }
+        }
+      } else if (row.status.includes('Hot')) {
+        return {
+          css: {
+            'background-color': '#B20600BF'
+          }
+        }
+      } else if (row.status.includes('Old')) {
+        return {
+          css: {
+            'background-color': '#ECB365BF'
+          }
+        }
+      } else if (row.status.includes('New')) {
+        return {
+          css: {
+            'background-color': '#0093ABBF'
+          }
+        }
+      } else if (row.status.includes('Other')) {
+        return {
+          css: {
+            'background-color': '#cac7c7BF'
+          }
+        }
+      } else if (row.status.includes('Detal')) {
+          return {
+              css: {
+                  'background-color': 'rgba(190,83,25,0.75)'
+              }
+          }
+      }
+      else if (row.status.includes('Own')) {
+        return {
+          css: {
+            'background-color': '#FFD124BF'
+          }
+        }
+      }
+      else {
+        return {
+          css: {}
+        }
+      }
+
+    }
+  </script>

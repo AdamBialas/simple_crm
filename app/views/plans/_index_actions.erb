@@ -1,0 +1,5 @@
+<div class="pull-right action-buttons">        
+    <%= link_to '<span class="fas fa-eye fa-lg"></span>'.html_safe, plan, title: "Show", data: { no_turbolink: true },:remote=> true , "data-toggle" => "modal", "data-target" => "#modal-window" %>           
+    <%= link_to '<span class="far fa-edit fa-lg"></span>'.html_safe, edit_plan_path(plan), title: "Edit", data: { no_turbolink: true },:remote=> true , "data-toggle" => "modal", "data-target" => "#modal-window" %>    
+    <%= link_to '<span class="far fa-trash-alt fa-lg"></span>'.html_safe, plan, method: :delete, title: 'Destroy', data: { confirm: 'Are you sure?' } %>       
+</div>

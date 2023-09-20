@@ -1,0 +1,61 @@
+<script>
+$(document).ready(function () {   
+    $('.send-form-after-change').change(function () {
+        $(this).parents('form').submit();
+    });    
+});
+</script>
+
+  <div class="card">
+    <div class="header">
+    </div>
+    <div class="panel-body">
+
+
+      <%= month_calendar do |date| %>        
+
+          <div class="container">
+
+            <div class="card-title date-head">
+              <%=date%>
+            </div>
+            <% if (xc=Plan.plans_for_day(date,params[:company_id]))> 0 %>
+              <%= link_to "<span class='fas fa-lg fa-clipboard'>#{xc}</span>" .html_safe,plans_url(:date=> date) , data:
+                { turbolinks: false }%>
+
+                <%end%>
+                  <% if date.month==@dd.month and date>= DateTime.now.to_date %>
+                    <%= link_to '<span style="background-color: #AF002A" class="plus fas fa-lg fa-plus modal-button"></span>'
+                      .html_safe,"#{plans_url}/new_on_date/#{date}", data: { no_turbolink: true,:remote=> true ,
+                      "data-toggle" => "modal", "data-target" => "#modal-window" } %>
+                      <%end%>
+
+          </div>
+
+          <% end %>
+    </div>
+    
+      <% unless @cc_list.empty? %>
+        <div class="card-footer text-muted">
+          <p>Filtr:</p>
+          <form class="form-horizontal" role="form" data-turbo=false method="get" action="<%= root_path %>">
+            <div class="form-group select-company">
+              <div class="field">
+                <%= select_tag("company_id",options_for_select(Company.where('id in (?)',@cc_list).order(name: :asc).collect {|u| [u.name,
+                  u.id]} ,selected: params[:company_id]),{prompt: 'Company' ,
+                  class: "form-control input-sm send-form-after-change" }) %>
+
+              </div>
+            </div>
+            <%= hidden_field_tag :start_date, @dd %>
+              <input type="submit" id="Scomit" style="display:none">
+          </form>
+        </div>
+        <%end%>
+  </div>
+
+  <div id="modal-window" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>

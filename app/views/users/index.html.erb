@@ -1,0 +1,64 @@
+<div data-turbolinks="false">
+<div class="card">
+    <div class="header">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item active">
+              <%= link_to 'New User' , new_user_path , class: "nav-link " , :remote=> true , "data-toggle" =>
+                "modal","data-target" => "#modal-window" %>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <div class="body">      
+
+      <form class="form-horizontal" role="form" method="post" novalidate action="<%=search_users_url(page: params[:page],limit: params[:limit],sort: params[:sort],order:params[:order]) %>">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <div class="field-custom">
+          <div class="row">
+            <div class="col-md-15">
+              <div class="form-group form-group-sm">
+                <div class="col-md-12">
+                  <input type="text" name="name" class="form-control input-sm" id="exampleInputPassword2" placeholder="name" value="<%= params[:name] || "" %>">
+                </div>              
+              </div>  
+          </div>
+        </div>
+        <div class="text-center">
+          <div class="btn-group">
+            <button type="submit" id="submit-button" class="btn btn-primary btn-lg active" name="search" value="search" title="Search">Search</button>
+          </div>
+        </div>
+
+        <table class="table table-responsive" id="table-regular" data-toggle="table" data-method="post" data-url="<%="#{search_users_url(authenticity_token: form_authenticity_token,name: params[:name])}"%>"
+          data-pagination="true" data-page-size="10" data-page-list="[10,20]"
+          data-show-jump-to="true" data-single-select="true" data-side-pagination="server" data-select-item-name="id[]"
+          data-click-to-select="true" data-id-field="id">
+          <thead>
+            <tr>
+              <th data-field="id" data-switchable="false" data-visible="false">ID</th>
+              <th data-field="avatar"></th>
+              <th data-field="email">Email</th>
+              <th data-field="name">Name</th>
+              <th data-field="lastname">Lastname</th>
+              <th data-field="actions" data-width="20" data-width-unit="%">Actions</th>
+            </tr>
+          </thead>
+        </table>
+        <%== pagy_bootstrap_nav(@pagy) %>      
+    </div>
+  </div> 
+</div>
+
+  <div id="modal-window" data-backdrop="static" data-keyboard="true" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content"></div>
+    </div>
+  </div>

@@ -1,0 +1,1 @@
+<%=link_to "<span>#{ad.name}</span>".html_safe, edit_company_address_path(id: ad.id,company_id: ad.company_id), data: { no_turbolink: true } ,:remote=> true , "data-toggle" => "modal", "data-target" => "#modal-window"  %>

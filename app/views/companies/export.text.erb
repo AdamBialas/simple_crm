@@ -1,0 +1,5 @@
+<%@companies.each do |cc|  %>
+<% unless cc.email_list==[] %>
+<%= cc.email_list.join(',') %>
+<%end%>
+<%end%>

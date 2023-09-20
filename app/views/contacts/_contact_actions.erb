@@ -1,0 +1,6 @@
+<div class="pull-right action-buttons">        
+    
+    <%= link_to '<span class="far fa-edit fa-lg"></span>'.html_safe, edit_company_contact_path(id: cc.id), title: "Edit", data: { no_turbolink: true },:remote=> true , "data-toggle" => "modal", "data-target" => "#modal-window" %>    
+    <%= link_to '<span class="far fa-trash-alt fa-lg"></span>'.html_safe, company_contact_path(id: cc.id), method: :delete, title: 'Destroy', data: { confirm: 'Are you sure?' } %>   
+    
+</div>

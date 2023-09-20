@@ -1,0 +1,20 @@
+<div class="pull-right action-buttons">        
+    <%= link_to '<span class="fas fa-eye fa-lg"></span>'.html_safe, cc, title: "Show", data: { no_turbolink: true } %>           
+    <%= link_to '<span class="far fa-edit fa-lg"></span>'.html_safe, edit_company_path(cc), title: "Edit", data: { no_turbolink: true },:remote=> true , "data-toggle" => "modal", "data-target" => "#modal-window" %>    
+    <%= link_to '<span class="far fa-trash-alt fa-lg"></span>'.html_safe, cc, method: :delete, title: 'Destroy', data: { confirm: 'Are you sure?' } %>   
+    <%= link_to '<span class="fas fa-user-friends fa-lg"></span>'.html_safe, company_contacts_path(cc.id) ,title: "Contacts", data: { no_turbolink: true } %>   
+    <%= link_to '<span class="fas fa-building fa-lg"></span>'.html_safe, company_addresses_path(cc.id) ,title: "Addresses", data: { no_turbolink: true } %>   
+    <%= link_to '<span class="fas fa-lg fa-clipboard"></span>'.html_safe, plans_url(company: cc.id) ,title: "Tasks", data: { no_turbolink: true } %>   
+    <a href="#" onclick='copyToClipboard("<%="#{cc.email_list.join(',')}"%>");'><%='<span class="fas fa-lg fa-at"></span>'.html_safe%></a>    
+</div>
+<script>
+  function copyToClipboard(text) {
+    const elem = document.createElement('textarea');
+    elem.value = text;
+    document.body.appendChild(elem);
+    elem.select();
+    document.execCommand('copy');
+    document.body.removeChild(elem);
+    toastr.success(text+' copied to clipboard!', '', { closeButton: true, progressBar: true })
+  }
+  </script>

@@ -1,0 +1,175 @@
+.card .header {
+    color: #555;
+    padding: 20px;
+    position: relative;
+    border-bottom: 1px solid rgba(204, 204, 204, 0.35);
+}
+.card .body {
+    color: rgb(178, 172, 162) !important;    
+        font-size: 14px;
+        color: #555;
+        padding: 20px;
+    }
+
+.card .footer {
+        display: block;
+        font-size: 12px;
+        margin-top: 5px;
+        color: #999;
+        line-height: 15px;
+        text-color: #555;
+        padding: 20px;
+        position: relative;
+        border-top: 1px solid rgba(204, 204, 204, 0.35);
+    }
+
+table.table-fit {
+        width: auto !important;
+        table-layout: auto !important;
+    }
+table.table-fit thead th, table.table-fit tfoot th {
+        width: auto !important;
+    }
+table.table-fit tbody td, table.table-fit tfoot td {
+        width: auto !important;
+    }
+
+.text_align_r {
+        text-align: right;
+      }
+
+.bg-c1 { background-color : #A2D5ABBF }
+.bg-c2 { background-color : #B20600BF }
+.bg-c3 { background-color : #ECB365BF }
+.bg-c4 { background-color : #0093ABBF }
+.bg-c5 { background-color : rgba(190,83,25,0.75)}
+.bg-c10 { background-color: #cac7c7BF }
+
+.bg-own { background-color : #FFD124BF }
+
+
+html, body, input, textarea, select, button {
+    background-color: #90a4af !important;
+}
+
+input, textarea, select, button {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+}
+
+.move-left {
+    width: auto;
+    box-shadow: none;
+  }
+
+.name {
+    color: #000000 !important; 
+    font-weight: bold;
+}
+.company_note {
+    color: #504a4a !important; 
+    font-weight: bold;
+    font-size: 12px;
+}
+
+
+.table tbody tr td, .table tbody tr th {
+    background-color : #ffffff;
+    border-top-color: rgb(53, 57, 59);
+    border-bottom-color: rgb(53, 57, 59);
+}
+
+a, a:hover, a:focus, a:active, span:active,  span:focus, span:hover {
+    text-decoration: none;
+    color: inherit;
+    background-color: #526c79;
+}
+
+#sidebar-nav {
+    width: 160px;
+}
+
+#date-head {
+    vertical-align: top;
+    display: inline-block;
+}
+
+#panel-bottom
+{
+    text-align: center;
+    vertical-align: top;
+    display: inline-block;
+}
+
+.user_name
+{
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+.user_logout
+{
+    text-align: center;  
+}
+
+.calendar-heading{
+    text-align: center;
+}
+.plus{
+    float: right;
+}
+
+label.required:before {
+    color:red;
+    content:"* ";
+  }
+
+label.optional:before {
+    color:rgba(0, 4, 255, 0.986);
+    content:"[optional] ";
+  }
+
+#textField {
+    display: flex;
+    flex-direction: column;
+    vertical-align: middle;
+  }
+
+.dt-user-avatar {
+    color: #000;
+}
+
+.dt-user-avatar {
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    -webkit-border-radius: 60px;
+    -moz-border-radius: 60px;
+    -ms-border-radius: 60px;
+    -o-border-radius: 60px;
+    border-radius: 60px;
+    max-width: none;
+    padding-top: 6px;
+    display: inline-block;
+    color: white;
+    position: relative;
+    white-space: nowrap;
+}
+
+.modal-button {
+    width: 32px;
+    height: 32px;
+    text-align: center;
+    -webkit-border-radius: 60px;
+    -moz-border-radius: 60px;
+    -ms-border-radius: 60px;
+    -o-border-radius: 60px;
+    border-radius: 60px;
+    max-width: none;
+    padding-top: 9px;
+    display: inline-block;
+    color: white;
+    position: relative;
+    white-space: nowrap;    
+    font-size: 20px;
+}

@@ -1,0 +1,69 @@
+<script>
+  $(document).ready(function () {
+  $('.table-regular').bootstrapTable();
+    })
+</script>
+<div class="card" >
+  <div class="header">
+    <strong>
+      <%= "Plans" %>
+    </strong>
+    <% if params[:company] %>
+
+      <strong>
+        <%= " for #{Company.find_by_id(params[:company]).name}" %>
+      </strong>
+      <% end %>
+
+        <% if params[:date] %>
+          <strong>
+            <%= " on #{params[:date]}" %>
+          </strong>
+          <% end %>
+  </div>
+  <div class="body" data-turbolinks="false">
+    <%= form_tag :plans, method: :get, class: "search" do %>     
+     <% if params[:date] %>
+     <% d_minus = ((Date.strptime(params[:date],"%Y-%m-%d"))-1).strftime("%Y-%m-%d") %>
+     <% d_plus =  ((Date.strptime(params[:date],"%Y-%m-%d"))+1).strftime("%Y-%m-%d") %>
+     <%=link_to '<span style="background-color: #AF002A" class="fas fa-lg fa-plus modal-button"></span>'.html_safe, new_plan_path({date:params[:date],company:params[:company]}),title: "New task" , data: { no_turbolink: true,:remote=> true , "data-toggle" => "modal","data-target" => "#modal-window" } %>
+     <%=link_to '<span style="background-color: #AF002A" class="fas fa-lg fa-arrow-left modal-button"></span>'.html_safe , search_plans_url(:date => d_minus , :company => params[:company], :search => "") %>
+     <%=link_to '<span style="background-color: #AF002A" class="fas fa-lg fa-arrow-right modal-button"</span>'.html_safe, search_plans_url(:date => d_plus , :company => params[:company], :search => "")  %>
+     <% end %>     
+    <% end %>
+
+    <table class="table table-responsive" id="table-regular" data-toggle="table" data-url="<%="#{plans_url(date:params["date"],company: params[:company])}"%>"
+      data-pagination="true"
+      data-page-size="100"
+      data-page-list="[10,20,50,100,200]"
+      data-search="true"
+      data-show-jump-to="true"
+      data-single-select="true"
+      data-side-pagination="client"
+      data-select-item-name="id[]"
+      data-click-to-select="true"
+      data-id-field="id"
+      >
+      <thead>
+        <tr>
+          <th data-field="id" data-switchable="false" data-visible="false">ID</th>
+          <th data-field="event_date">Date</th>
+          <th data-field="company" data-sortable="true">Company</th>
+          <th data-field="event_type_s">Type</th>
+          <th data-field="event_name">Task</th>
+          <th data-field="event_description">Description</th>
+          <th data-field="created_at">Created</th>
+          <th data-field="actions">Actions</th>
+          <th data-field="status" data-width="10" data-width-unit="%">Status</th>
+        </tr>
+      </thead>
+    </table>
+  </div>
+</div>
+     <br>        
+          <div id="modal-window" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content"></div>
+            </div>
+          </div>

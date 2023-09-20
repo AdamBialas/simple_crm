@@ -1,0 +1,93 @@
+<div class="card">
+  <div class="header">
+  <div class="panel-body">
+    <form class="form-horizontal" role="form" method="post" action="<%=search_addresses_path %>">
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="field-custom">
+        <div class="row">
+          <div class="col-md-15">
+            <div class="form-group form-group-sm">
+              <div class="col-md-12">
+                <input type="text" name="name" class="form-control input-sm" id="exampleInputPassword2"
+                  placeholder="name" value="<%= params[:name] || "" %>">
+              </div>              
+            </div>
+            <div class="form-group form-group-sm">
+              <div class="col-md-12">
+                <input type="text" name="street" class="form-control input-sm" id="exampleInputPassword2"
+                  placeholder="street" value="<%= params[:street] || "" %>">
+              </div>              
+            </div>
+          </div>          
+          <div class="col-md-15">
+            <div class="form-group  form-group-sm">
+              <div class="col-md-12">
+                <input type="text" name="city" class="form-control input-sm" id="exampleInputPassword2"
+                  placeholder="city" value="<%= params[:city] || "" %>">
+              </div>
+            </div>
+            <div class="form-group form-group-sm">
+              <div class="col-md-12">
+                <input type="text" name="postcode" class="form-control input-sm" id="exampleInputPassword2"
+                  placeholder="postcode" value="<%= params[:postcode] || "" %>">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="text-center">
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary btn-lg active" name="search" value="search"
+            title="Search">Search</button>
+        </div>
+      </div>      
+  </div>
+</div>
+<div class="card">
+  <div class="body">
+<div data-turbolinks="false">
+  <table class="table table-responsive" id="table-regular" data-toggle="table" data-method="post" data-url="<%="#{search_addresses_path(name: params[:name],postcode: params[:postcode],city: params[:city],street: params[:street],page: params[:page],authenticity_token: form_authenticity_token)}"%>"
+    data-sortable="true"
+    data-page-size="10"      
+    data-side-pagination="server"    
+    data-pagination="true"    
+    data-select-item-name="id[]"
+    data-click-to-select="true"
+    data-id-field="id"
+    data-query-params="queryParams"
+    >
+    <thead>
+      <tr>
+        <th data-field="state" data-checkbox="true"></th>                                  
+        <th data-field="id" data-switchable="false" data-visible="false">ID</th>
+        <th data-field="name" data-sortable="true" data-width="30" data-width-unit="%">Name</th>
+        <th data-field="street" data-sortable="true" data-width="40" data-width-unit="%" >Street</th>
+        <th data-field="number">number</th>
+        <th data-field="city" data-sortable="true" data-width="30" data-width-unit="%">City</th>
+        <th data-field="postcode" data-sortable="true" >Postcode</th>
+        <th data-field="country">Country</th>
+        <th data-field="region">Region</th>
+        <th data-field="main">Main</th>
+        <th data-field="company" data-width="60" data-width-unit="%">Company</th>
+        <th data-field="actions">Actions</th>
+      </tr>
+    </thead>    
+  </table>      
+  <%== pagy_bootstrap_nav(@pagy) %>
+</div>
+</div>
+</div>
+<br>
+
+<script>
+  function queryParams(params) {
+    return params;
+}
+</script>
+
+<div id="modal-window" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>

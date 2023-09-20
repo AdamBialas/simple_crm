@@ -1,0 +1,8 @@
+<% if LocalRigths.validate(Current.user.rights, 'Plan', 'Edit') %>
+$("#modal-window").find(".modal-content").html("<%= j(render 'form', plan: @plan) %>");
+flatpickr("[class='form-control flatpickr']", {enableTime: false, dateFormat: "Y-m-d",minDate: "today"})
+$("#modal-window").modal("show");
+<%else%>
+ <% flash[:alert] = 'You are not permitted to view this page' %>
+ location.replace("<%=request.referrer %>");
+<%end%>

@@ -1,0 +1,22 @@
+<div class="pull-right action-buttons">
+      <script>
+      $(document).ready(function () {
+      $('.send-form-after-change').change(function () {
+        $(this).parents('form').submit();
+    });
+
+    const config =  {
+      "enableTime": false,
+     "dateFormat": "Y-m-d",
+     "minDate": "today"
+}
+    flatpickr("[class='form-control flatpickr send-form-after-change']", config );
+});
+      </script>
+
+     <%= form_for (plan), url: "#{plans_url}/date/#{plan.id}",method: :post, remote: true do |form| %>
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <%= form.text_field :event_date , value: plan.event_date , id: "event_date" ,class: 'form-control flatpickr send-form-after-change'%>
+                            
+                            <%end%>
+</div>

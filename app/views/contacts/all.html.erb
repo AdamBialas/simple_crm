@@ -1,0 +1,88 @@
+<script>
+  function copyToClipboard(text) {
+    const elem = document.createElement('textarea');
+    elem.value = text;
+    document.body.appendChild(elem);
+    elem.select();
+    document.execCommand('copy');
+    document.body.removeChild(elem);
+    toastr.success(text+' copied to clipboard!', '', { closeButton: true, progressBar: true })
+  }
+  </script>
+<div class="card">
+  <div class="header">
+  <div class="panel-body">
+    <form class="form-horizontal" role="form" method="post" action="<%=search_contacts_path %>">      
+      <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+      <div class="field-custom">
+        <div class="row">
+          <div class="col-md-15">
+            <div class="form-group form-group-sm">
+              <div class="col-md-12">
+                <input type="text" name="name" class="form-control input-sm" id="exampleInputPassword2"
+                  placeholder="name" value="<%= params[:name] || "" %>">
+              </div>              
+            </div>
+            <div class="form-group form-group-sm">
+              <div class="col-md-12">
+                <input type="text" name="email" class="form-control input-sm" id="exampleInputPassword2"
+                  placeholder="e-mail" value="<%= params[:email] || "" %>">
+              </div>              
+            </div>
+          </div>          
+          <div class="col-md-15">
+            <div class="form-group  form-group-sm">
+              <div class="col-md-12">
+                <input type="text" name="phone" class="form-control input-sm" id="exampleInputPassword2"
+                  placeholder="phone number" value="<%= params[:phone] || "" %>">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div class="text-center">
+        <div class="btn-group">
+          <button type="submit" class="btn btn-primary btn-lg active" name="search" value="search"
+            title="Search">Search</button>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="card">
+  <div class="body">
+<div data-turbolinks="false">
+  <table class="table table-responsive" id="table-regular" data-toggle="table" data-url="<%="#{search_contacts_path(name: params[:name],email: params[:email],phone: params[:phone],page: params[:page])}"%>"
+    data-sortable="true"
+    data-page-size="100"    
+    data-side-pagination="server"
+    data-select-item-name="id[]"
+    data-click-to-select="true"    
+    data-id-field="id"
+    >
+    <thead>
+      <tr>
+        <th data-field="state" data-checkbox="true"></th>                          
+        <th data-field="id" data-switchable="false" data-visible="false">ID</th>
+                                  <th data-field="name_lastname" data-width="50" data-width-unit="%" >Name</th>  
+                                  <th data-field="jobposition" data-width="20" data-width-unit="%">Job position</th>                                
+                                  <th data-field="email" data-width="20" data-width-unit="%">E-mail</th>
+                                  <th data-field="phone" data-width="20" data-width-unit="%">Phone</th>
+                                  <th data-field="company" data-width="20" data-width-unit="%">Company</th>
+                                  <th data-field="actions" data-width="20" data-width-unit="%">Actions</th>
+      </tr>
+    </thead>
+  </table>
+  <%== pagy_bootstrap_nav(@pagy) %>
+</div>
+</div>
+</div>
+<br>
+</div> 
+
+<div id="modal-window" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content"></div>
+  </div>
+</div>
+
