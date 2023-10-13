@@ -1,0 +1,6 @@
+
+<% if @company.errors.blank? %>
+    $('#modal-window').modal('hide');
+<% else %>
+    $("#modal-window .modal-content").html("<%= escape_javascript(render "form", company: @company, remote: true) %>");
+<% end %>

@@ -1,7 +1,7 @@
-<% if LocalRigths.validate(Current.user.rights, 'Company', 'New') %>
-$("#modal-window").find(".modal-content").html("<%= j(render 'form', company: @company) %>");
+<% if LocalRigths.validate(Current.user.rights, "Company", "New") %>
+$("#modal-window .modal-content").html("<%= escape_javascript(render "form", company: @company, remote: true) %>");
 $("#modal-window").modal("show");
-<%else%>
- <% flash[:alert] = 'You are not permitted to view this page' %>
- location.replace("<%=request.referrer %>");
-<%end%>
+<% else %>
+ <% flash[:alert] = "You are not permitted to view this page" %>
+ location.replace("<%= request.referrer %>");
+<% end %>

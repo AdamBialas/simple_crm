@@ -6,20 +6,19 @@ class CompaniesController < ApplicationController
 
   # GET /companies or /companies.json
   def index
-    if LocalRigths.validate(Current.user.rights, 'Company', 'View')
+    if LocalRigths.validate(Current.user.rights, "Company", "View")
       @features_list = Company.new.features_list_
       params[:features] = {} if params[:features].nil?
       self.params = params.permit!
       @pagy, @companies = pagy Company.search(params), items: params[:limit]
       @pagy.vars[:params].clear
     else
-      redirect_to(main_app.root_path, alert: 'You are not permitted to view this page')
+      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
     end
   end
 
   def search
-    if LocalRigths.validate(Current.user.rights, 'Company', 'View')
-
+    if LocalRigths.validate(Current.user.rights, "Company", "View")
       @features_list = Company.new.features_list_
       params[:features] = {} if params[:features].nil?
       self.params = params.permit!
@@ -36,7 +35,7 @@ class CompaniesController < ApplicationController
         end
       end
     else
-      redirect_to(main_app.root_path, alert: 'You are not permitted to view this page')
+      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
     end
   end
 
@@ -45,10 +44,10 @@ class CompaniesController < ApplicationController
     @main_adress = @company.main_address
     @features_list = @company.features_list_
     params[:features] = if @company.features_hash.nil?
-                          {}
-                        else
-                          JSON.parse @company.features_hash
-                        end
+        {}
+      else
+        JSON.parse @company.features_hash
+      end
   end
 
   # GET /companies/new
@@ -56,32 +55,35 @@ class CompaniesController < ApplicationController
     @company = Company.new
     @features_list = @company.features_list_
     params[:features] = if @company.features_hash.nil?
-                          {}
-                        else
-                          JSON.parse @company.features_hash
-                        end
+        {}
+      else
+        JSON.parse @company.features_hash
+      end
   end
 
   # GET /companies/1/edit
   def edit
     @features_list = @company.features_list_
     params[:features] = if @company.features_hash.nil?
-                          {}
-                        else
-                          JSON.parse @company.features_hash
-                        end
+        {}
+      else
+        JSON.parse @company.features_hash
+      end
   end
 
   # POST /companies or /companies.json
   def create
     params[:company][:features_hash] = params[:features].to_json
+
     @company = Company.new(company_params)
     respond_to do |format|
       if @company.save
-        format.html { redirect_to company_url(@company), notice: 'Company was successfully created.' }
+        format.js { redirect_to company_url(@company), notice: "Company was successfully created." }
         format.json { render :show, status: :created, location: @company }
       else
+        @features_list = @company.features_list_
         format.html { render :new, status: :unprocessable_entity }
+        format.js
         format.json { render json: @company.errors, status: :unprocessable_entity }
       end
     end
@@ -93,9 +95,9 @@ class CompaniesController < ApplicationController
     respond_to do |format|
       format.text do
         @companies = Company.search(params)
-        headers['Content-Disposition'] = "attachment; filename=\"emaillist_#{Time.now.strftime('%Y%m%d_%H%M%S')}.txt\""
-        headers['Content-Type'] ||= 'text/plain'
-        headers['Transfer-Encoding'] ||= 'identity'
+        headers["Content-Disposition"] = "attachment; filename=\"emaillist_#{Time.now.strftime("%Y%m%d_%H%M%S")}.txt\""
+        headers["Content-Type"] ||= "text/plain"
+        headers["Transfer-Encoding"] ||= "identity"
         render layout: false
       end
     end
@@ -106,10 +108,11 @@ class CompaniesController < ApplicationController
     respond_to do |format|
       params[:company][:features_hash] = params[:features].to_json
       if @company.update(company_params)
-        format.html { redirect_to company_url(@company), notice: 'Company was successfully updated.' }
+        format.html { redirect_to company_url(@company), notice: "Company was successfully updated." }
         format.json { render :show, status: :ok, location: @company }
       else
         format.html { render :edit, status: :unprocessable_entity }
+        format.js { render :edit, status: :unprocessable_entity }
         format.json { render json: @company.errors, status: :unprocessable_entity }
       end
     end
@@ -117,16 +120,16 @@ class CompaniesController < ApplicationController
 
   # DELETE /companies/1 or /companies/1.json
   def destroy
-    if LocalRigths.validate(Current.user.rights, 'Company', 'Delete')
+    if LocalRigths.validate(Current.user.rights, "Company", "Delete")
       @company.destroy
 
       respond_to do |format|
-        format.html { redirect_to companies_url, notice: 'Company was successfully destroyed.' }
+        format.html { redirect_to companies_url, notice: "Company was successfully destroyed." }
         format.json { head :no_content }
       end
     else
       redirect_to request.referrer
-      flash[:alert] = 'You are not permitted to view this page'
+      flash[:alert] = "You are not permitted to view this page"
     end
   end
 

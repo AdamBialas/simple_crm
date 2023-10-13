@@ -1,64 +1,63 @@
 <div class="card">
   <div class="card-header">
-    <%if controller.action_name=='new' %>
-    <p>New Company</p>
-    <%else%>
-    <p>Edit Company</p>
+    <% if %w[new create].include? controller.action_name %>
+      <p>New Company</p>
+    <% else %>
+      <p>Edit Company</p>
     <% end %>
-    </div>
-
-<%= form_with(model: company) do |form| %>
-<div class="card-body m-1">
-  <% if company.errors.any? %>
-    <div id="error_explanation">
-      <h2>
-        <%= pluralize(company.errors.count, "error" ) %> prohibited this company from being saved:
-      </h2>
-
-      <ul>
-        <% company.errors.each do |error| %>
-          <li>
-            <%= error.full_message %>
-          </li>
-          <% end %>
-      </ul>
-    </div>
-    <% end %>
-      <div class="form-group">
-        <div class="field">
-          <label for="Name">Name</label>          
-            <%= form.text_field :name,id: "name",class: "form-control" %>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="status">Status</label>          
-            <%= form.select :status,  options_for_select(Company::STATES.map { |key, value| [value ,key] },company.status || 0 ) , {},{class: 'form-control', required: true ,id: "status"} %>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="Note">Note</label>          
-            <%= form.text_field :note,id: "note",class: "form-control" %>
-        </div>
-      </div>
-      
-      <% @features_list.each do |xx| %>
-      <div class="form-group">
-        <div class="field">
-          <label for="features_<%=xx.name.to_s%>"><%=xx.caption.to_s%></label>            
-            <%= select_tag "features[#{xx.name.to_s}]",  options_for_select( xx.values, selected: params[:features]["#{xx.name.to_s}"] ), { prompt: "Select..." , class: 'form-control', required: false ,id: "features_#{xx.name.to_s}"} %>
-        </div>
-      </div>
-      <%end%>
-
-
-
-      <div class="card-footer text-muted">
-      <div class="actions calendar-heading">      
-        <%= form.submit class: 'btn btn-primary' %>
-        </div>
-      </div>
-      <% end %>
-    </div>
   </div>
+  <% remote ||= false %>
+  <%= form_with model: company, html: { method: :post, "data-remote": remote } do |form| %>
+    <div class="card-body m-1">
+      <% if company.errors.any? %>
+        <div id="error_explanation">
+          <h2>
+            <%= pluralize(company.errors.count, "error") %> prohibited this company from being saved:
+          </h2>
+          <ul>
+            <% company.errors.each do |error| %>
+              <li>
+                <%= error.full_message %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+      <div class="form-group">
+        <div class="field">
+          <label for="Name">Name</label>
+          <%= form.text_field :name, id: "name", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="status">Status</label>
+          <%= form.select :status, options_for_select(Company::STATES.map { |key, value|
+                [value, key]
+              }, company.status || 0), {}, { class: "form-control", required: true, id: "status" } %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="Note">Note</label>
+          <%= form.text_field :note, id: "note", class: "form-control" %>
+        </div>
+      </div>
+      <% @features_list.each do |xx| %>
+        <div class="form-group">
+          <div class="field">
+            <label for="features_<%= xx.name.to_s %>">
+              <%= xx.caption.to_s %>
+            </label>
+            <%= select_tag "features[#{xx.name.to_s}]", options_for_select(xx.values, selected: params[:features]["#{xx.name.to_s}"]), { prompt: "Select...", class: "form-control", required: false, id: "features_#{xx.name.to_s}" } %>
+          </div>
+        </div>
+      <% end %>
+      <div class="card-footer text-muted">
+        <div class="actions calendar-heading">
+          <%= form.submit class: "btn btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

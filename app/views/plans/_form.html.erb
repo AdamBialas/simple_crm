@@ -1,119 +1,114 @@
 <div class="card">
   <div class="card-header">
-    <p>New task
-      <%if controller.action_name=='edit' %>
-        <%=" #{plan.event_date}"%>
-          <%end%>
-    </p>
-    <%if plan.company_id %>
-      <% cc=Company.find_by_id(plan.company_id) %>
-         <% if cc.own==true %>
-         <p class="bg-own">
-         <%else%>
-        <p class='<%="bg-c#{cc.status.to_i}"%>'>
-         <%end%>
-          <%=cc.name%>
-        </p>
-        <%end%>
+    <% if %w[new new_on_date create].include? controller.action_name %>
+      <p>New Task</p>
+    <% else %>
+      <p>Edit Task</p>
+    <% end %>
+    <% if controller.action_name == "edit" %>
+      <%= " #{plan.event_date}" %>
+    <% end %>
+  </p>
+  <% if plan.company_id %>
+    <% cc = Company.find_by_id(plan.company_id) %>
+    <% if cc.own == true %>
+      <p class="bg-own">
+      <% else %>
+        <p class='<%= "bg-c#{cc.status.to_i}" %>'>
+        <% end %>
+        <%= cc.name %>
+      </p>
+    <% end %>
   </div>
-
-  <%= form_for (plan) do |form| %>
+  <% remote ||= false %>
+  <%= form_for(plan, html: { method: :post, "data-remote": remote }) do |form| %>
     <div class="card-body m-1">
       <% if plan.errors.any? %>
         <div id="error_explanation">
           <h2>
-            <%= pluralize(plan.errors.count, "error" ) %> prohibited this plan from being saved:
+            <%= pluralize(plan.errors.count, "error") %> prohibited this plan from being saved:
           </h2>
-
           <ul>
             <% plan.errors.each do |error| %>
               <li>
                 <%= error.full_message %>
               </li>
-              <% end %>
+            <% end %>
           </ul>
         </div>
+      <% end %>
+      <div data-turbolinks="false">
+        <div class="form-group">
+          <div class="field">
+            <% if params[:date] %>
+              <%= form.label :event_date, class: "required" %>
+              <%= form.text_field :event_date, value: params[:date].to_date.nil? ?
+                                                 form.object.try(:strftime, "%Y-%m-%d") : params[:date].to_date, id: "event_date",
+                                               class: "form-control flatpickr" %>
+            <% end %>
+          </div>
+        </div>
+        <% unless "edit".include? controller.action_name %>
+          <div class="form-group select-company">
+            <div class="field">
+              <%= form.label :company_id, class: "required" %>
+              <%= form.select :company_id, options_for_select(Company.list_for_select.collect { |u| [u.name, u.id] }, selected: plan.company_id), { prompt: "Select" }, { id: "id-select2", required: "true", autofocus: "true",
+                                                                                                                                                                          class: "form-control content-search" } %>
+            </div>
+          </div>
         <% end %>
-          <div data-turbolinks="false">
-            <div class="form-group">
-              <div class="field">
-                <% if params[:date] %>
-                  <%= form.label :event_date ,class: "required" %>
-                    <%= form.text_field :event_date , value: params[:date].to_date.nil? ?
-                      form.object.try(:strftime,"%Y-%m-%d") : params[:date].to_date , id: "event_date" ,
-                      class: 'form-control flatpickr' %>
-                      <%end%>
-              </div>
-            </div>
-
-            <%unless 'edit' .include? controller.action_name %>
-              <div class="form-group select-company">
-                <div class="field">
-                  <%= form.label :company_id ,class: "required" %>
-                    <%= form.select :company_id, options_for_select(Company.order(name: :asc).all.collect {|u| [u.name, u.id]},selected:
-                      plan.company_id) ,{ prompt: 'Select' },{id: "id-select2" , required: 'true' , autofocus: 'true' ,
-                      class: 'form-control content-search' } %>
-                </div>
-              </div>
-              <%end%>
-
-                <%if ['new_for_company','edit'].include? controller.action_name %>
-                  <div class="form-group">
-                    <div class="field">
-                      <%= form.label :contact_id %>
-                        <%= form.select :contact_id,
-                          options_for_select(Company.find_by_id(plan.company_id).contacts.all.collect {|u| ["#{u.name}
-                          #{u.lastname}", u.id]}), {prompt: 'Select' },{id: "id-select2" , autofocus: 'true' ,
-                          class: 'form-control content-search' } %>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <div class="field">
-                      <%= form.label :address_id %>
-                        <%= form.select :address_id,
-                          options_for_select(Company.find_by_id(plan.company_id).addresses.all.collect {|u|
-                          ["#{u.name}", u.id]}), {prompt: 'Select' },{id: "id-select2" , autofocus: 'true' ,
-                          class: 'form-control content-search' } %>
-                    </div>
-                  </div>
-
-                  <%end%>
-
-
-                    <div class="form-group">
-                      <div class="field">
-                        <%= form.label :event_type, class: "required" %>
-                          <%= form.select :event_type, options_for_select(Plan::TYPES.invert.to_a,selected:
-                            plan.event_type), {prompt: 'Select' },{id: "id-select2-types" , required: 'true' ,
-                            autofocus: 'true' , class: 'form-control' } %>
-                      </div>
-                    </div>
-          </div>
-
+        <% if ["new_for_company", "edit"].include? controller.action_name %>
           <div class="form-group">
             <div class="field">
-              <%= form.label :event_name %>
-                <%= form.text_field :event_name , id: "even_name" , class: "form-control" %>
+              <%= form.label :contact_id %>
+              <%= form.select :contact_id,
+                              options_for_select(Company.find_by_id(plan.company_id).contacts.all.collect { |u|
+                                ["#{u.name}
+                                                                                                    #{u.lastname}", u.id]
+                              }), { prompt: "Select" }, { id: "id-select2", autofocus: "true",
+                                                          class: "form-control content-search" } %>
             </div>
           </div>
-
           <div class="form-group">
             <div class="field">
-              <%= form.label :event_description %>
-                <%= form.text_area :event_description,:cols=> 30, :rows => 10, id: "event_description" ,class:
-                  "form-control" %>
+              <%= form.label :address_id %>
+              <%= form.select :address_id,
+                              options_for_select(Company.find_by_id(plan.company_id).addresses.all.collect { |u|
+                                ["#{u.name}", u.id]
+                              }), { prompt: "Select" }, { id: "id-select2", autofocus: "true",
+                                                          class: "form-control content-search" } %>
             </div>
           </div>
+        <% end %>
+        <div class="form-group">
+          <div class="field">
+            <%= form.label :event_type, class: "required" %>
+            <%= form.select :event_type, options_for_select(Plan::TYPES.invert.to_a, selected: plan.event_type), { prompt: "Select" }, { id: "id-select2-types", required: "true",
+                                                                                                                                         autofocus: "true", class: "form-control" } %>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <%= form.label :event_name %>
+          <%= form.text_field :event_name, id: "even_name", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <%= form.label :event_description %>
+          <%= form.text_area :event_description, :cols => 30, :rows => 10, id: "event_description", class: "form-control" %>
+        </div>
+      </div>
     </div>
     <div class="card-footer text-muted">
       <div class="actions calendar-heading">
-        <%if controller.action_name=='edit' %>
-          <%= form.submit "Update task" , class: 'btn btn-primary' %>
-            <%else%>
-              <%= form.submit "Add task" , class: 'btn btn-primary' %>
-                <%end%>
+        <% if controller.action_name == "edit" %>
+          <%= form.submit "Update task", class: "btn btn-primary" %>
+        <% else %>
+          <%= form.submit "Add task", class: "btn btn-primary" %>
+        <% end %>
       </div>
     </div>
-    <% end %>
+  <% end %>
 </div>

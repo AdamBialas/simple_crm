@@ -1,2 +1,2 @@
-$("#modal-window").find(".modal-content").html("<%= j(render 'form', user: @user) %>");
+$("#modal-window .modal-content").html("<%= escape_javascript(render "form", user: @user, remote: true) %>");
 $("#modal-window").modal("show");

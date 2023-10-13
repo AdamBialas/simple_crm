@@ -4,37 +4,37 @@ class PlansController < ApplicationController
 
   # GET /plans or /plans.json
   def index
-    if LocalRigths.validate(Current.user.rights, 'Plan', 'View')
+    if LocalRigths.validate(Current.user.rights, "Plan", "View")
       if %w[date company].any? { |i| params.keys.include?(i) }
         sql = []
 
         sql << "event_date='#{params[:date]}' " if params[:date]
         sql << "company_id='#{params[:company]}' " if params[:company]
-        p sql.join(' and ')
-        @plans = Plan.where(sql.join(' and ')).all
+
+        @plans = Plan.where(sql.join(" and ")).all
       else
         @plans = Plan.all
       end
     else
-      redirect_to(main_app.root_path, alert: 'You are not permitted to view this page')
+      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
     end
   end
 
   def search
-    if LocalRigths.validate(Current.user.rights, 'Plan', 'View')
+    if LocalRigths.validate(Current.user.rights, "Plan", "View")
       if %w[date company].any? { |i| params.keys.include?(i) }
         sql = []
 
         sql << "event_date='#{params[:date]}' " if params[:date]
         sql << "company_id='#{params[:company]}' " if params[:company]
-        p sql.join(' and ')
-        @plans = Plan.where(sql.join(' and ')).all
+
+        @plans = Plan.where(sql.join(" and ")).all
       else
         @plans = Plan.all
       end
-      render 'index'
+      render "index"
     else
-      redirect_to(main_app.root_path, alert: 'You are not permitted to view this page')
+      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
     end
   end
 
@@ -78,7 +78,7 @@ class PlansController < ApplicationController
       if @plan.save
         format.html do
           redirect_to request.referrer
-          flash[:success] = 'Task was successfully created.'
+          flash[:success] = "Task was successfully created."
         end
         format.json { render :show, status: :created, location: @plan }
       else
@@ -94,7 +94,7 @@ class PlansController < ApplicationController
       if @plan.update(plan_params)
         format.html do
           redirect_to request.referrer
-          flash[:success] = 'Task was successfully updated.'
+          flash[:success] = "Task was successfully updated."
         end
         format.json { render :show, status: :ok, location: @plan }
       else
@@ -106,20 +106,20 @@ class PlansController < ApplicationController
 
   # DELETE /plans/1 or /plans/1.json
   def destroy
-    if LocalRigths.validate(Current.user.rights, 'Plan', 'Delete')
+    if LocalRigths.validate(Current.user.rights, "Plan", "Delete")
       @contact.destroy
       @plan.destroy
 
       respond_to do |format|
         format.html do
           redirect_to request.referrer
-          flash[:success] = 'Task was successfully destroyed.'
+          flash[:success] = "Task was successfully destroyed."
         end
         format.json { head :no_content }
       end
     else
       redirect_to request.referrer
-      flash[:alert] = 'You are not permitted to view this page'
+      flash[:alert] = "You are not permitted to view this page"
     end
   end
 
@@ -139,9 +139,9 @@ class PlansController < ApplicationController
   private
 
   def set_cache_headers
-    response.headers['Cache-Control'] = 'no-cache, no-store'
-    response.headers['Pragma'] = 'no-cache'
-    response.headers['Expires'] = 'Mon, 01 Jan 1990 00:00:00 GMT'
+    response.headers["Cache-Control"] = "no-cache, no-store"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "Mon, 01 Jan 1990 00:00:00 GMT"
   end
 
   # Use callbacks to share common setup or constraints between actions.

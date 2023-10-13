@@ -1,72 +1,72 @@
-<div class="card">  
-<%= form_for (@user) do |form| %>
- 
-  <% if user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(user.errors.count, "error") %> prohibited this address from being saved:</h2>
-
-      <ul>
-        <% user.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-  <div class="card-body m-1">
-    <div class="form-group">
-      <div class="field">
-        <label for="email">E-mail (login)</label>          
-          <%= form.text_field :email,id: "email",class: "form-control" %>
-     </div>      
-    </div>
-
-    <div class="form-group">
-      <div class="field">
-        <label for="name">Name</label>          
-          <%= form.text_field :name,id: "name",class: "form-control" %>
-     </div>      
-    </div>
-
-  <div class="form-group">
+<% remote ||= false %>
+<div class="card">
+  <%= form_for(@user, html: { method: :post, "data-remote": remote }) do |form| %>
+    <% if user.errors.any? %>
+      <div id="error_explanation">
+        <h2>
+          <%= pluralize(user.errors.count, "error") %> prohibited this address from being saved:
+        </h2>
+        <ul>
+          <% user.errors.each do |error| %>
+            <li>
+              <%= error.full_message %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="card-body m-1">
+      <div class="form-group">
         <div class="field">
-          <label for="lastname">LastName</label>          
-            <%= form.text_field :lastname,id: "lastname",class: "form-control" %>
-       </div>      
+          <label for="email">E-mail (login)</label>
+          <%= form.text_field :email, id: "email", class: "form-control" %>
+        </div>
       </div>
       <div class="form-group">
         <div class="field">
-          <label for="password">Password</label>          
-            <%= form.password_field :password,id: "password",class: "form-control" %>
-       </div>      
-      </div>      
-      <hr>
-
+          <label for="name">Name</label>
+          <%= form.text_field :name, id: "name", class: "form-control" %>
+        </div>
+      </div>
       <div class="form-group">
-        <label>Rights</label>          
-      <% LocalRigths.list.each do |xr|%>
-<br>
-<strong><%="#{xr[0]}"%></strong>
-<div class="col-sm-1" >
-<% xr[1].each do |kl| %>
-<% kl.each do |key, value| %>
-<div class="form-check">
-<% role = (params["role_#{value}"].to_i==1) %>
-<%=check_box_tag("role_#{value}",  value = 1  , role , class: "form-check-input") %>
-<%= label_tag "role_#{value}"," #{key} ", class: "form-check-label"   %>
-</div>
-<%end%>
-<%end%>
-</div>
-<%end%>
-
-</div>
-      
-</div>
-<div class="card-footer text-muted">
-  <div class="actions calendar-heading">      
-    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-    <%= form.submit class: 'btn btn-primary' %>
+        <div class="field">
+          <label for="lastname">LastName</label>
+          <%= form.text_field :lastname, id: "lastname", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="password">Password</label>
+          <%= form.password_field :password, id: "password", class: "form-control" %>
+        </div>
+      </div>
+      <hr>
+      <div class="form-group">
+        <label>Rights</label>
+        <% LocalRigths.list.each do |xr| %>
+          <br>
+          <strong>
+            <%= "#{xr[0]}" %>
+          </strong>
+          <div class="col-sm-1">
+            <% xr[1].each do |kl| %>
+              <% kl.each do |key, value| %>
+                <div class="form-check">
+                  <% role = (params["role_#{value}"].to_i == 1) %>
+                  <%= check_box_tag("role_#{value}", value = 1, role, class: "form-check-input") %>
+                  <%= label_tag "role_#{value}", " #{key} ", class: " form-check-label" %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
     </div>
-  </div>
-<% end %>
+    <div class="card-footer text-muted">
+      <div class="actions calendar-heading">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+        <%= form.submit class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
 </div>
