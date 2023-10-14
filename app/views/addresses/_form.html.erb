@@ -1,70 +1,70 @@
 <div class="card">
-<%= form_for([@company,@address]) do |form| %>
-  <% if address.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(address.errors.count, "error") %> prohibited this address from being saved:</h2>
-
-      <ul>
-        <% address.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
+  <% remote ||= false %>
+  <%= form_for([@company, @address], html: { method: :post, "data-remote": remote }) do |form| %>
+    <% if address.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(address.errors.count, "error") %> prohibited this address from being saved:</h2>
+        <ul>
+          <% address.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+    <div class="card-body m-1">
+      <div class="form-group">
+        <div class="field">
+          <label for="name">Name</label>
+          <%= form.text_field :name, id: "name", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="street">Street</label>
+          <%= form.text_field :street, id: "street", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="number">Number</label>
+          <%= form.text_field :number, id: "number", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="city">City</label>
+          <%= form.text_field :city, id: "city", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="postcode">Postcode</label>
+          <%= form.text_field :postcode, id: "postcode", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="country">Country</label>
+          <%= form.text_field :country, id: "country", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="region">Region</label>
+          <%= form.text_field :region, id: "region", class: "form-control" %>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="field">
+          <label for="main">Main</label>
+          <%= form.check_box :main, id: "main", class: "form-control" %>
+        </div>
+      </div>
+    </div>
+    <div class="card-footer text-muted">
+      <div class="actions calendar-heading">
+        <%= form.submit class: "btn btn-primary" %>
+      </div>
     </div>
   <% end %>
-  <div class="card-body m-1">
-  <div class="form-group">
-        <div class="field">
-          <label for="name">Name</label>          
-            <%= form.text_field :name,id: "name",class: "form-control" %>
-       </div>      
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="street">Street</label>          
-            <%= form.text_field :street,id: "street",class: "form-control" %>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="number">Number</label>          
-            <%= form.text_field :number,id: "number",class: "form-control" %>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="city">City</label>          
-            <%= form.text_field :city,id: "city",class: "form-control" %>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="postcode">Postcode</label>          
-            <%= form.text_field :postcode,id: "postcode",class: "form-control" %>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="country">Country</label>          
-            <%= form.text_field :country,id: "country",class: "form-control" %>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="region">Region</label>          
-            <%= form.text_field :region,id: "region",class: "form-control" %>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="field">
-          <label for="main">Main</label>          
-            <%= form.check_box :main ,id: "main",class: "form-control" %>
-        </div>
-      </div>
-</div>
-<div class="card-footer text-muted">
-  <div class="actions calendar-heading">      
-    <%= form.submit class: 'btn btn-primary' %>
-    </div>
-  </div>
-<% end %>
 </div>

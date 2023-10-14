@@ -2,7 +2,7 @@ class Contact < ApplicationRecord
   belongs_to :company
   validates_presence_of :name, :lastname, :status
 
-  def self.search(params)
+  def self.contacts_by_params(params)
     where_sql = []
     where_sql << " ((name like '%#{params[:name]}%') or (lastname like '%#{params[:name]}%'))  " unless ["", nil, []].include? params[:name]
     where_sql << "email like '%#{params[:email]}%' " unless ["", nil, []].include? params[:email]

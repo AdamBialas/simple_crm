@@ -6,27 +6,27 @@ class ContactsController < ApplicationController
 
   # GET /contacts or /contacts.json
   def index
-    if LocalRigths.validate(Current.user.rights, 'Contact', 'View')
+    if LocalRigths.validate(Current.user.rights, "Contact", "View")
       @pagy, @contacts = pagy @contacts = @company.contacts.all
     else
-      redirect_to(main_app.root_path, alert: 'You are not permitted to view this page')
+      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
     end
   end
 
   def search
     respond_to do |format|
       format.html do
-        if LocalRigths.validate(Current.user.rights, 'Contact', 'View')
-          @pagy, @contacts = pagy Contact.search(params), items: params[:limit]
+        if LocalRigths.validate(Current.user.rights, "Contact", "View")
+          @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
           @pagy.vars[:params].merge!(params.permit(:name, :email, :phone, :search, :page,
                                                    :authenticity_token).to_h)
           render :all
         else
-          redirect_to(main_app.root_path, alert: 'You are not permitted to view this page')
+          redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
         end
       end
       format.json do
-        @pagy, @contacts = pagy Contact.search(params), items: params[:limit]
+        @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
       end
     end
   end
@@ -45,16 +45,16 @@ class ContactsController < ApplicationController
   def all
     respond_to do |format|
       format.html do
-        if LocalRigths.validate(Current.user.rights, 'Contact', 'View')
-          @pagy, @contacts = pagy Contact.search(params), items: params[:limit]
+        if LocalRigths.validate(Current.user.rights, "Contact", "View")
+          @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
           @pagy.vars[:params].clear
           render :all
         else
-          redirect_to(main_app.root_path, alert: 'You are not permitted to view this page')
+          redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
         end
       end
       format.json do
-        @pagy, @contacts = pagy Contact.search(params), items: params[:limit]
+        @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
       end
     end
   end
@@ -67,11 +67,13 @@ class ContactsController < ApplicationController
       if @contact.save
         format.html do
           redirect_to request.referrer
-          flash[:success] = 'Contact was successfully created.'
+          flash[:success] = "Contact was successfully created."
         end
+        format.js { redirect_to request.referrer, notice: "Contact was successfully created." }
         format.json { render :show, status: :created, location: @contact }
       else
         format.html { render :new, status: :unprocessable_entity }
+        format.js
         format.json { render json: @contact.errors, status: :unprocessable_entity }
       end
     end
@@ -83,7 +85,7 @@ class ContactsController < ApplicationController
       if @contact.update(contact_params)
         format.html do
           redirect_to request.referrer
-          flash[:success] = 'Contact was successfully updated.'
+          flash[:success] = "Contact was successfully updated."
         end
         format.json { render :show, status: :ok, location: @contact }
       else
@@ -95,16 +97,16 @@ class ContactsController < ApplicationController
 
   # DELETE /contacts/1 or /contacts/1.json
   def destroy
-    if LocalRigths.validate(Current.user.rights, 'Contact', 'Delete')
+    if LocalRigths.validate(Current.user.rights, "Contact", "Delete")
       @contact.destroy
 
       respond_to do |format|
-        format.html { redirect_to company_contacts_url, notice: 'Contact was successfully destroyed.' }
+        format.html { redirect_to company_contacts_url, notice: "Contact was successfully destroyed." }
         format.json { head :no_content }
       end
     else
       redirect_to request.referrer
-      flash[:alert] = 'You are not permitted to view this page'
+      flash[:alert] = "You are not permitted to view this page"
     end
   end
 
@@ -112,7 +114,7 @@ class ContactsController < ApplicationController
 
   def redirect_to_last_page(exception)
     redirect_to url_for(page: exception.pagy.last),
-    alert: "Page ##{params[:page]} is overflowing. Showing page #{exception.pagy.last} instead."
+                alert: "Page ##{params[:page]} is overflowing. Showing page #{exception.pagy.last} instead."
   end
 
   # Use callbacks to share common setup or constraints between actions.

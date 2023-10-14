@@ -5,16 +5,7 @@ class PlansController < ApplicationController
   # GET /plans or /plans.json
   def index
     if LocalRigths.validate(Current.user.rights, "Plan", "View")
-      if %w[date company].any? { |i| params.keys.include?(i) }
-        sql = []
-
-        sql << "event_date='#{params[:date]}' " if params[:date]
-        sql << "company_id='#{params[:company]}' " if params[:company]
-
-        @plans = Plan.where(sql.join(" and ")).all
-      else
-        @plans = Plan.all
-      end
+      Plan.plans_by_params(params)
     else
       redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
     end
@@ -22,16 +13,7 @@ class PlansController < ApplicationController
 
   def search
     if LocalRigths.validate(Current.user.rights, "Plan", "View")
-      if %w[date company].any? { |i| params.keys.include?(i) }
-        sql = []
-
-        sql << "event_date='#{params[:date]}' " if params[:date]
-        sql << "company_id='#{params[:company]}' " if params[:company]
-
-        @plans = Plan.where(sql.join(" and ")).all
-      else
-        @plans = Plan.all
-      end
+      Plan.plans_by_params(params)
       render "index"
     else
       redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
@@ -63,7 +45,6 @@ class PlansController < ApplicationController
     @plan = Plan.new
     params[:date] = DateTime.now.to_date
     @plan.company_id = params[:company_id]
-    p @plan
     render :new_for_company
   end
 
