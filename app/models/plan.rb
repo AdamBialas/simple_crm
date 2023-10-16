@@ -57,7 +57,7 @@ class Plan < ApplicationRecord
     end
 
     def companies_in_month(date)
-      Plan.select("id,company_id").where("strftime('%m',event_date)=strftime('%m','#{date}')").map { |x| x.company_id }
+      Plan.select("id,company_id").where("strftime('%m/%Y',event_date)=strftime('%m/%Y','#{date}')").map { |x| x.company_id }
     end
   end
 end

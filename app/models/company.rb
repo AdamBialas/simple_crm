@@ -45,8 +45,8 @@ class Company < ApplicationRecord
     unless params[:features].nil?
       feature_ids = []
       params[:features].each do |key, value|
-        Company.connection.select_all("select c.id from companies c ,json_each(features_hash) as x where x.value = '#{value}' and x.key= '#{key}'").each do |rr|
-          feature_ids << rr["id"]
+        Company.connection.select_all("select c.id from companies c ,json_each(features_hash) as x where x.value = '#{value}' and x.key= '#{key}'").each do |feature|
+          feature_ids << feature["id"]
         end
       end
     end
