@@ -2,22 +2,19 @@ class PlansController < ApplicationController
   before_action :set_plan, only: %i[show edit update destroy set_status set_date]
   before_action :set_cache_headers
 
+  before_action :validate_view_rigths, only: %i[index search show]
+  before_action :validate_delete_rigths, only: %i[destroy]
+  before_action :validate_new_rigths, only: %i[new new_on_date new_for_company]
+  before_action :validate_edit_rigths, only: %i[edit]
+
   # GET /plans or /plans.json
   def index
-    if LocalRigths.validate(Current.user.rights, "Plan", "View")
-      Plan.plans_by_params(params)
-    else
-      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-    end
+    @plans = Plan.plans_by_params(params)
   end
 
   def search
-    if LocalRigths.validate(Current.user.rights, "Plan", "View")
-      Plan.plans_by_params(params)
-      render "index"
-    else
-      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-    end
+    @plans = Plan.plans_by_params(params)
+    render "index"
   end
 
   # GET /plans/1 or /plans/1.json
@@ -61,9 +58,11 @@ class PlansController < ApplicationController
           redirect_to request.referrer
           flash[:success] = "Task was successfully created."
         end
+        format.js { redirect_to request.referrer, notice: "Task was successfully created." }
         format.json { render :show, status: :created, location: @plan }
       else
         format.html { render :new, status: :unprocessable_entity }
+        format.js
         format.json { render json: @plan.errors, status: :unprocessable_entity }
       end
     end
@@ -87,20 +86,14 @@ class PlansController < ApplicationController
 
   # DELETE /plans/1 or /plans/1.json
   def destroy
-    if LocalRigths.validate(Current.user.rights, "Plan", "Delete")
-      @contact.destroy
-      @plan.destroy
+    @plan.destroy
 
-      respond_to do |format|
-        format.html do
-          redirect_to request.referrer
-          flash[:success] = "Task was successfully destroyed."
-        end
-        format.json { head :no_content }
+    respond_to do |format|
+      format.html do
+        redirect_to request.referrer
+        flash[:success] = "Task was successfully destroyed."
       end
-    else
-      redirect_to request.referrer
-      flash[:alert] = "You are not permitted to view this page"
+      format.json { head :no_content }
     end
   end
 
@@ -125,7 +118,26 @@ class PlansController < ApplicationController
     response.headers["Expires"] = "Mon, 01 Jan 1990 00:00:00 GMT"
   end
 
-  # Use callbacks to share common setup or constraints between actions.
+  def validate_view_rigths
+    return if LocalRigths.validate(Current.user.rights, "Plan", "View")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
+  def validate_delete_rigths
+    return if LocalRigths.validate(Current.user.rights, "Plan", "Delete")
+    redirect_to(request.referrer, alert: "You are not permitted to view this page")
+  end
+
+  def validate_edit_rigths
+    return if LocalRigths.validate(Current.user.rights, "Plan", "Edit")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
+  def validate_new_rigths
+    return if LocalRigths.validate(Current.user.rights, "Plan", "New")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
   def set_plan
     @plan = Plan.find(params[:id])
   end

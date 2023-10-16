@@ -2,15 +2,16 @@ class AddressesController < ApplicationController
   before_action :set_address, only: %i[show edit update destroy]
   before_action :set_company, only: %i[create new index show edit update delete destroy]
 
+  before_action :validate_view_rigths, only: %i[index search all show]
+  before_action :validate_delete_rigths, only: %i[destroy]
+  before_action :validate_new_rigths, only: %i[new]
+  before_action :validate_edit_rigths, only: %i[edit]
+
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   # GET /addresses or /addresses.json
   def index
-    if LocalRigths.validate(Current.user.rights, "Address", "View")
-      @pagy, @addresses = pagy @addresses = @company.addresses
-    else
-      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-    end
+    @pagy, @addresses = pagy @addresses = @company.addresses
   end
 
   # GET /addresses/1 or /addresses/1.json
@@ -63,32 +64,23 @@ class AddressesController < ApplicationController
 
   # DELETE /addresses/1 or /addresses/1.json
   def destroy
-    if LocalRigths.validate(Current.user.rights, "Address", "Delete")
-      @address.destroy
-      respond_to do |format|
-        format.html do
-          redirect_to request.referrer
-          flash[:success] = "Address was successfully destroyed."
-        end
-        format.json { head :no_content }
+    @address.destroy
+    respond_to do |format|
+      format.html do
+        redirect_to request.referrer
+        flash[:success] = "Address was successfully destroyed."
       end
-    else
-      redirect_to request.referrer
-      flash[:alert] = "You are not permitted to view this page"
+      format.json { head :no_content }
     end
   end
 
   def search
     respond_to do |format|
       format.html do
-        if LocalRigths.validate(Current.user.rights, "Address", "View")
-          @pagy, @addresses = pagy Address.search(params), items: params[:limit]
-          @pagy.vars[:params].merge!(params.permit(:name, :street, :city, :postcode, :search, :page,
-                                                   :authenticity_token).to_h)
-          render :all
-        else
-          redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-        end
+        @pagy, @addresses = pagy Address.search(params), items: params[:limit]
+        @pagy.vars[:params].merge!(params.permit(:name, :street, :city, :postcode, :search, :page,
+                                                 :authenticity_token).to_h)
+        render :all
       end
       format.json do
         @pagy, @addresses = pagy Address.search(params), items: params[:limit]
@@ -99,13 +91,9 @@ class AddressesController < ApplicationController
   def all
     respond_to do |format|
       format.html do
-        if LocalRigths.validate(Current.user.rights, "Address", "View")
-          @pagy, @addresses = pagy Address.search(params), items: params[:limit]
-          @pagy.vars[:params].clear
-          render :all
-        else
-          redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-        end
+        @pagy, @addresses = pagy Address.search(params), items: params[:limit]
+        @pagy.vars[:params].clear
+        render :all
       end
       format.json do
         @pagy, @addresses = pagy Address.search(params), items: params[:limit]
@@ -124,10 +112,29 @@ class AddressesController < ApplicationController
     @company = Company.find(params[:company_id])
   end
 
-  # Use callbacks to share common setup or constraints between actions.
   def set_address
     set_company
     @address = Address.find(params[:id])
+  end
+
+  def validate_view_rigths
+    return if LocalRigths.validate(Current.user.rights, "Address", "View")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
+  def validate_delete_rigths
+    return if LocalRigths.validate(Current.user.rights, "Address", "Delete")
+    redirect_to(request.referrer, alert: "You are not permitted to view this page")
+  end
+
+  def validate_edit_rigths
+    return if LocalRigths.validate(Current.user.rights, "Address", "Edit")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
+  def validate_new_rigths
+    return if LocalRigths.validate(Current.user.rights, "Address", "New")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
   end
 
   # Only allow a list of trusted parameters through.

@@ -28,9 +28,7 @@ class Plan < ApplicationRecord
   }
 
   belongs_to :company
-  validates :company_id, presence: true
-  validates :event_date, presence: true
-  validates :event_type, presence: true
+  validates_presence_of :event_name, :company_id, :event_date, :event_type
 
   class << self
     def plans_for_day(date, company_id = nil)
@@ -52,9 +50,9 @@ class Plan < ApplicationRecord
         sql << "event_date='#{params[:date]}' " if params[:date]
         sql << "company_id='#{params[:company]}' " if params[:company]
 
-        @plans = Plan.where(sql.join(" and ")).all
+        Plan.where(sql.join(" and ")).all
       else
-        @plans = Plan.all
+        Plan.all
       end
     end
 

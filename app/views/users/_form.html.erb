@@ -1,6 +1,6 @@
 <% remote ||= false %>
 <div class="card">
-  <%= form_for(@user, html: { method: :post, "data-remote": remote }) do |form| %>
+  <%= form_for(@user, html: { "data-remote": remote }) do |form| %>
     <% if user.errors.any? %>
       <div id="error_explanation">
         <h2>

@@ -1,7 +1,2 @@
-<% if LocalRigths.validate(Current.user.rights, 'Contact', 'Edit') %>
-$("#modal-window").find(".modal-content").html("<%= j(render 'form', contact: @contact) %>");
+$("#modal-window").find(".modal-content").html("<%= j(render "form", contact: @contact) %>");
 $("#modal-window").modal("show");
-<%else%>
- <% flash[:alert] = 'You are not permitted to view this page' %>
- location.replace("<%=request.referrer %>");
-<%end%>

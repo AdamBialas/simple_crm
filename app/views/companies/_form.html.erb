@@ -7,7 +7,7 @@
     <% end %>
   </div>
   <% remote ||= false %>
-  <%= form_with model: company, html: { method: :post, "data-remote": remote } do |form| %>
+  <%= form_with model: company, html: { "data-remote": remote } do |form| %>
     <div class="card-body m-1">
       <% if company.errors.any? %>
         <div id="error_explanation">

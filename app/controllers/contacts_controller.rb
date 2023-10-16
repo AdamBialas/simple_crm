@@ -4,26 +4,23 @@ class ContactsController < ApplicationController
 
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
+  before_action :validate_view_rigths, only: %i[index search all show]
+  before_action :validate_delete_rigths, only: %i[destroy]
+  before_action :validate_new_rigths, only: %i[new]
+  before_action :validate_edit_rigths, only: %i[edit]
+
   # GET /contacts or /contacts.json
   def index
-    if LocalRigths.validate(Current.user.rights, "Contact", "View")
-      @pagy, @contacts = pagy @contacts = @company.contacts.all
-    else
-      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-    end
+    @pagy, @contacts = pagy @contacts = @company.contacts.all
   end
 
   def search
     respond_to do |format|
       format.html do
-        if LocalRigths.validate(Current.user.rights, "Contact", "View")
-          @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
-          @pagy.vars[:params].merge!(params.permit(:name, :email, :phone, :search, :page,
-                                                   :authenticity_token).to_h)
-          render :all
-        else
-          redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-        end
+        @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
+        @pagy.vars[:params].merge!(params.permit(:name, :email, :phone, :search, :page,
+                                                 :authenticity_token).to_h)
+        render :all
       end
       format.json do
         @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
@@ -45,13 +42,9 @@ class ContactsController < ApplicationController
   def all
     respond_to do |format|
       format.html do
-        if LocalRigths.validate(Current.user.rights, "Contact", "View")
-          @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
-          @pagy.vars[:params].clear
-          render :all
-        else
-          redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-        end
+        @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
+        @pagy.vars[:params].clear
+        render :all
       end
       format.json do
         @pagy, @contacts = pagy Contact.contacts_by_params(params), items: params[:limit]
@@ -97,16 +90,11 @@ class ContactsController < ApplicationController
 
   # DELETE /contacts/1 or /contacts/1.json
   def destroy
-    if LocalRigths.validate(Current.user.rights, "Contact", "Delete")
-      @contact.destroy
+    @contact.destroy
 
-      respond_to do |format|
-        format.html { redirect_to company_contacts_url, notice: "Contact was successfully destroyed." }
-        format.json { head :no_content }
-      end
-    else
-      redirect_to request.referrer
-      flash[:alert] = "You are not permitted to view this page"
+    respond_to do |format|
+      format.html { redirect_to company_contacts_url, notice: "Contact was successfully destroyed." }
+      format.json { head :no_content }
     end
   end
 
@@ -125,6 +113,26 @@ class ContactsController < ApplicationController
   def set_contact
     set_company
     @contact = @company.contacts.find(params[:id])
+  end
+
+  def validate_view_rigths
+    return if LocalRigths.validate(Current.user.rights, "Contact", "View")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
+  def validate_delete_rigths
+    return if LocalRigths.validate(Current.user.rights, "Contact", "Delete")
+    redirect_to(request.referrer, alert: "You are not permitted to view this page")
+  end
+
+  def validate_edit_rigths
+    return if LocalRigths.validate(Current.user.rights, "Contact", "Edit")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
+  def validate_new_rigths
+    return if LocalRigths.validate(Current.user.rights, "Contact", "New")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
   end
 
   # Only allow a list of trusted parameters through.

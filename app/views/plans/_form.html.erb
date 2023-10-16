@@ -21,7 +21,7 @@
     <% end %>
   </div>
   <% remote ||= false %>
-  <%= form_for(plan, html: { method: :post, "data-remote": remote }) do |form| %>
+  <%= form_for(plan, html: { "data-remote": remote }) do |form| %>
     <div class="card-body m-1">
       <% if plan.errors.any? %>
         <div id="error_explanation">
@@ -40,10 +40,10 @@
       <div data-turbolinks="false">
         <div class="form-group">
           <div class="field">
-            <% if params[:date] %>
+            <% if params[:date] || @plan.event_date.present? %>
               <%= form.label :event_date, class: "required" %>
-              <%= form.text_field :event_date, value: params[:date].to_date.nil? ?
-                                                 form.object.try(:strftime, "%Y-%m-%d") : params[:date].to_date, id: "event_date",
+              <%= form.text_field :event_date, value: (params[:date].nil? ?
+                                                 form.object.try(:strftime, "%Y-%m-%d") : params[:date].to_date) || @plan.event_date, id: "event_date",
                                                class: "form-control flatpickr" %>
             <% end %>
           </div>
@@ -62,9 +62,8 @@
             <div class="field">
               <%= form.label :contact_id %>
               <%= form.select :contact_id,
-                              options_for_select(Company.find_by_id(plan.company_id).contacts.all.collect { |u|
-                                ["#{u.name}
-                                                                                                    #{u.lastname}", u.id]
+                              options_for_select(Company.find_by_id(plan.company_id).contacts.collect { |u|
+                                ["#{u.name} #{u.lastname}", u.id]
                               }), { prompt: "Select" }, { id: "id-select2", autofocus: "true",
                                                           class: "form-control content-search" } %>
             </div>

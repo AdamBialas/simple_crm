@@ -16,7 +16,6 @@ module Rigths
     @@list.each do |_key, value|
       out[_key.to_s] = value.constants(false).map { |s| { s.to_s => value.const_get(s) } }
     end
-    p out
     out
   end
 
@@ -27,6 +26,6 @@ module Rigths
   end
 
   def validate(user_rights, _name, _role)
-    user_rights.split(',').include?("role_#{code(_name, _role)}")
+    user_rights.split(",").include?("role_#{code(_name, _role)}")
   end
 end

@@ -26,7 +26,7 @@ class Company < ApplicationRecord
   has_many :plans, dependent: :destroy
   belongs_to :user, default: -> { Current.user }
 
-  scope :id_in_list, ->(ids) { where("id in (?)", ids).order(name: :asc) }
+  scope :id_in_list, ->(ids) { where("id in (?)", ids) }
   scope :order_by_name, -> { order(name: :asc) }
 
   validates_presence_of :name, :status

@@ -2,40 +2,37 @@ class CompaniesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_company, only: %i[show edit update destroy]
 
+  before_action :validate_view_rigths, only: %i[index search show]
+  before_action :validate_delete_rigths, only: %i[destroy]
+  before_action :validate_new_rigths, only: %i[new]
+  before_action :validate_edit_rigths, only: %i[edit]
+
   rescue_from Pagy::OverflowError, with: :redirect_to_last_page
 
   # GET /companies or /companies.json
   def index
-    if LocalRigths.validate(Current.user.rights, "Company", "View")
-      @features_list = Company.new.features_list_
-      params[:features] = {} if params[:features].nil?
-      self.params = params.permit!
-      @pagy, @companies = pagy Company.search(params), items: params[:limit]
-      @pagy.vars[:params].clear
-    else
-      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
-    end
+    @features_list = Company.new.features_list_
+    params[:features] = {} if params[:features].nil?
+    self.params = params.permit!
+    @pagy, @companies = pagy Company.search(params), items: params[:limit]
+    @pagy.vars[:params].clear
   end
 
   def search
-    if LocalRigths.validate(Current.user.rights, "Company", "View")
-      @features_list = Company.new.features_list_
-      params[:features] = {} if params[:features].nil?
-      self.params = params.permit!
-      respond_to do |format|
-        format.html do
-          @pagy, @companies = pagy Company.search(params), items: params[:limit]
-          @pagy.vars[:params].merge!(params.permit(:name, :state, :person, :place, :page, :authenticity_token,
-                                                   'features': {}).to_h)
+    @features_list = Company.new.features_list_
+    params[:features] = {} if params[:features].nil?
+    self.params = params.permit!
+    respond_to do |format|
+      format.html do
+        @pagy, @companies = pagy Company.search(params), items: params[:limit]
+        @pagy.vars[:params].merge!(params.permit(:name, :state, :person, :place, :page, :authenticity_token,
+                                                 'features': {}).to_h)
 
-          render :index
-        end
-        format.json do
-          @pagy, @companies = pagy Company.search(params), items: params[:limit]
-        end
+        render :index
       end
-    else
-      redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+      format.json do
+        @pagy, @companies = pagy Company.search(params), items: params[:limit]
+      end
     end
   end
 
@@ -76,6 +73,7 @@ class CompaniesController < ApplicationController
     params[:company][:features_hash] = params[:features].to_json
 
     @company = Company.new(company_params)
+
     respond_to do |format|
       if @company.save
         format.js { redirect_to company_url(@company), notice: "Company was successfully created." }
@@ -120,16 +118,11 @@ class CompaniesController < ApplicationController
 
   # DELETE /companies/1 or /companies/1.json
   def destroy
-    if LocalRigths.validate(Current.user.rights, "Company", "Delete")
-      @company.destroy
+    @company.destroy
 
-      respond_to do |format|
-        format.html { redirect_to companies_url, notice: "Company was successfully destroyed." }
-        format.json { head :no_content }
-      end
-    else
-      redirect_to request.referrer
-      flash[:alert] = "You are not permitted to view this page"
+    respond_to do |format|
+      format.html { redirect_to companies_url, notice: "Company was successfully destroyed." }
+      format.json { head :no_content }
     end
   end
 
@@ -140,7 +133,26 @@ class CompaniesController < ApplicationController
                 alert: "Page ##{params[:page]} is overflowing. Showing page #{exception.pagy.last} instead."
   end
 
-  # Use callbacks to share common setup or constraints between actions.
+  def validate_view_rigths
+    return if LocalRigths.validate(Current.user.rights, "Company", "View")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
+  def validate_delete_rigths
+    return if LocalRigths.validate(Current.user.rights, "Company", "Delete")
+    redirect_to(request.referrer, alert: "You are not permitted to view this page")
+  end
+
+  def validate_edit_rigths
+    return if LocalRigths.validate(Current.user.rights, "Company", "Edit")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
+  def validate_new_rigths
+    return if LocalRigths.validate(Current.user.rights, "Company", "New")
+    redirect_to(main_app.root_path, alert: "You are not permitted to view this page")
+  end
+
   def set_company
     @company = Company.find(params[:id])
   end
