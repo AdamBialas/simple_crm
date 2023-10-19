@@ -1,6 +1,6 @@
 class Address < ApplicationRecord
   belongs_to :company
-  validates_presence_of :name, :country, :street, :number, :city, :postcode, :status
+  validates_presence_of :name, :country, :street, :number, :city, :postcode
 
   def self.search(params)
     where_sql = []

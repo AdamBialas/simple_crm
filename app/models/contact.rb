@@ -1,6 +1,6 @@
 class Contact < ApplicationRecord
   belongs_to :company
-  validates_presence_of :name, :lastname, :status
+  validates_presence_of :name, :lastname
 
   def self.contacts_by_params(params)
     where_sql = []

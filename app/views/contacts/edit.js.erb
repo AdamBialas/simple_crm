@@ -1,2 +1,2 @@
-$("#modal-window").find(".modal-content").html("<%= j(render "form", contact: @contact) %>");
+$("#modal-window").find(".modal-content").html("<%= j(render "form", contact: @contact, remote: true) %>");
 $("#modal-window").modal("show");

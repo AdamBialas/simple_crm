@@ -1,0 +1,7 @@
+
+<% if @contact.errors.blank? %>
+    $('#modal-window').modal('hide');
+    window.location.reload();
+<% else %>
+    $("#modal-window .modal-content").html("<%= escape_javascript(render "form", contact: @contact, remote: true) %>");
+<% end %>

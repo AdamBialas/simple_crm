@@ -80,9 +80,11 @@ class ContactsController < ApplicationController
           redirect_to request.referrer
           flash[:success] = "Contact was successfully updated."
         end
+        format.js { render :update, notice: "Contact was successfully updated." }
         format.json { render :show, status: :ok, location: @contact }
       else
         format.html { render :edit, status: :unprocessable_entity }
+        format.js
         format.json { render json: @contact.errors, status: :unprocessable_entity }
       end
     end

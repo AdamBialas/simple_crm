@@ -54,9 +54,11 @@ class AddressesController < ApplicationController
           redirect_to request.referrer
           flash[:success] = "Address was successfully updated."
         end
+        format.js { render :update, notice: "Address was successfully updated." }
         format.json { render :show, status: :ok, location: @address }
       else
         format.html { render :edit, status: :unprocessable_entity }
+        format.js
         format.json { render json: @address.errors, status: :unprocessable_entity }
       end
     end
